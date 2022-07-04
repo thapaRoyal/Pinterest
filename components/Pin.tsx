@@ -1,15 +1,17 @@
 import { Image, Text, View, StyleSheet } from 'react-native';
 
-const Pin = () => {
+const Pin = (props) => {
+  const { image, title } = props.pin;
+  console.log(image);
   return (
     <View style={styles.pin}>
       <Image
         source={{
-          uri: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/pinterest/0.jpeg',
+          uri: image,
         }}
         style={styles.image}
       />
-      <Text style={styles.title}>notJust Hoodie</Text>
+      <Text style={styles.title}>{title}</Text>
     </View>
   );
 };

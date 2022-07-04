@@ -10,7 +10,20 @@ export default function HomeScreen({
 }: RootTabScreenProps<'TabOne'>) {
   return (
     <View style={styles.container}>
-      <Pin title={'Title'} image={''} />
+      <Pin
+        pin={{
+          title: 'first',
+          image:
+            'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/pinterest/0.jpeg',
+        }}
+      />
+      <Pin
+        pin={{
+          title: 'second',
+          image:
+            'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/pinterest/0.jpeg',
+        }}
+      />
     </View>
   );
 }
