@@ -18,8 +18,7 @@ import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
-import TabOneScreen from '../screens/HomeScreen';
-import TabTwoScreen from '../screens/ProfileScreen';
+import HomeScreen from '../screens/HomeScreen';
 import {
   RootStackParamList,
   RootTabParamList,
@@ -27,6 +26,8 @@ import {
 } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import PinScreen from '../screens/PinScreen';
+import CreatePinScreen from '../screens/CreatePinScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 export default function Navigation({
   colorScheme,
@@ -93,7 +94,7 @@ function BottomTabNavigator() {
     >
       <BottomTab.Screen
         name="Home"
-        component={TabOneScreen}
+        component={HomeScreen}
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => (
@@ -103,7 +104,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="CreatePin"
-        component={TabOneScreen}
+        component={CreatePinScreen}
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => (
@@ -113,7 +114,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Profile"
-        component={TabTwoScreen}
+        component={ProfileScreen}
         options={{
           title: 'Profile',
           tabBarIcon: ({ color }) => (
