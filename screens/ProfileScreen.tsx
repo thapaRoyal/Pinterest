@@ -1,12 +1,14 @@
-import { StyleSheet } from 'react-native';
-
-import EditScreenInfo from '../components/EditScreenInfo';
-import { Text, View } from '../components/Themed';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 export default function ProfileScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>ProfileScreen</Text>
+      <Image
+        source={require('../assets/images/avatar.jpg')}
+        style={styles.image}
+      />
+      <Text style={styles.title}>thapaRoyal</Text>
+      <Text style={styles.subtitle}>777k followers | 23 Followings</Text>
     </View>
   );
 }
@@ -20,10 +22,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+    margin: 20,
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  subtitle: {
+    color: '#181818',
+    fontWeight: '600',
+  },
+  image: {
+    height: 200,
+    aspectRatio: 1,
+    borderRadius: 200,
   },
 });
