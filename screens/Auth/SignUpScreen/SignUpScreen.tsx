@@ -1,31 +1,52 @@
-import { View, Text, StyleSheet, ScrollView, TextInput } from "react-native";
-import CustomButton from "../components/CustomButton";
-import SocialSignInButtons from "../components/SocialSignInButtons";
-import { useNavigation } from "@react-navigation/core";
-import { useState } from "react";
-import Colors from "../../../constants/Colors";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TextInput,
+  Alert,
+} from 'react-native';
+import CustomButton from '../components/CustomButton';
+import SocialSignInButtons from '../components/SocialSignInButtons';
+import { useNavigation } from '@react-navigation/core';
+import { useState } from 'react';
+import Colors from '../../../constants/Colors';
+import { useNhostClient } from '@nhost/react';
 
 const SignUpScreen = () => {
   const navigation = useNavigation();
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const onRegisterPressed = () => {
-    console.warn("Sign up");
+  const nhost = useNhostClient();
+
+  const onRegisterPressed = async () => {
+    const result = await nhost.auth.signUp({
+      email,
+      password,
+      options: {
+        displayName: name,
+      },
+    });
+    if (result.error) {
+      Alert.alert('Error signing up', result.error.message);
+    } else {
+      navigation.navigate('Sign in');
+    }
   };
 
   const onSignInPress = () => {
-    navigation.navigate("Sign in");
+    navigation.navigate('Sign in');
   };
 
   const onTermsOfUsePressed = () => {
-    console.warn("onTermsOfUsePressed");
+    console.warn('onTermsOfUsePressed');
   };
 
   const onPrivacyPressed = () => {
-    console.warn("onPrivacyPressed");
+    console.warn('onPrivacyPressed');
   };
 
   return (
@@ -58,11 +79,11 @@ const SignUpScreen = () => {
         <CustomButton text="Register" onPress={onRegisterPressed} />
 
         <Text style={styles.text}>
-          By registering, you confirm that you accept our{" "}
+          By registering, you confirm that you accept our{' '}
           <Text style={styles.link} onPress={onTermsOfUsePressed}>
             Terms of Use
-          </Text>{" "}
-          and{" "}
+          </Text>{' '}
+          and{' '}
           <Text style={styles.link} onPress={onPrivacyPressed}>
             Privacy Policy
           </Text>
@@ -82,27 +103,27 @@ const SignUpScreen = () => {
 
 const styles = StyleSheet.create({
   root: {
-    alignItems: "center",
+    alignItems: 'center',
     padding: 20,
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
-    color: "black",
+    fontWeight: 'bold',
+    color: 'black',
     margin: 10,
   },
   text: {
-    color: "gray",
+    color: 'gray',
     marginVertical: 10,
   },
   link: {
     color: Colors.light.tint,
   },
   input: {
-    backgroundColor: "white",
-    width: "100%",
+    backgroundColor: 'white',
+    width: '100%',
 
-    borderColor: "#e8e8e8",
+    borderColor: '#e8e8e8',
     borderWidth: 1,
     borderRadius: 5,
 
