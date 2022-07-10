@@ -8,10 +8,27 @@ import {
   StyleSheet,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { useNhostClient } from '@nhost/react';
+
+const CREATE_PIN_MUTATION = `
+mutation MyMutation ($image: String!, $title: String) {
+  insert_pins(objects: {image: $image, title: $title}) {
+    returning {
+      created_at
+      id
+      image
+      title
+      user_id
+    }
+  }
+}
+`;
 
 export default function CreatePinScreen() {
   const [image, setImage] = useState(null);
   const [title, setTitle] = useState('');
+
+  const nhost = useNhostClient();
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -28,7 +45,12 @@ export default function CreatePinScreen() {
     }
   };
 
-  const onSubmit = () => {};
+  const onSubmit = async () => {
+    const result = await nhost.graphql.request(CREATE_PIN_MUTATION, {
+      title,
+      image: '',
+    });
+  };
 
   return (
     <View style={styles.root}>
