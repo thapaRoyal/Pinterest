@@ -6,9 +6,11 @@ import {
   Platform,
   TextInput,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useNhostClient } from '@nhost/react';
+import { useNavigation } from '@react-navigation/native';
 
 const CREATE_PIN_MUTATION = `
 mutation MyMutation ($image: String!, $title: String) {
@@ -29,6 +31,7 @@ export default function CreatePinScreen() {
   const [title, setTitle] = useState('');
 
   const nhost = useNhostClient();
+  const navigation = useNavigation();
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -46,10 +49,18 @@ export default function CreatePinScreen() {
   };
 
   const onSubmit = async () => {
+    // TODO upload image to storage
     const result = await nhost.graphql.request(CREATE_PIN_MUTATION, {
       title,
-      image: '',
+      image:
+        'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/pinterest/1.jpeg',
     });
+    console.log(result);
+    if (result.error) {
+      Alert.alert('Error creating the post', result.error.message);
+    } else {
+      navigation.goBack();
+    }
   };
 
   return (
