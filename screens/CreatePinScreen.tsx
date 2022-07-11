@@ -27,7 +27,7 @@ mutation MyMutation ($image: String!, $title: String) {
 `;
 
 export default function CreatePinScreen() {
-  const [image, setImage] = useState(null);
+  const [imageUri, setImageUri] = useState<null | string>(null);
   const [title, setTitle] = useState('');
 
   const nhost = useNhostClient();
@@ -44,12 +44,26 @@ export default function CreatePinScreen() {
     console.log(result);
 
     if (!result.cancelled) {
-      setImage(result.uri);
+      setImageUri(result.uri);
     }
+  };
+
+  const uploadFile = async () => {
+    if(imageUri) 
+    const uri =
+      Platform.OS === 'ios' ? imageUri.replace('file://', '') : imageUri;
+    const result = await nhost.storage.upload({
+      name: '123.png',
+      type: 'image/png',
+      uri,
+    });
   };
 
   const onSubmit = async () => {
     // TODO upload image to storage
+
+    uploadFile();
+
     const result = await nhost.graphql.request(CREATE_PIN_MUTATION, {
       title,
       image:
@@ -66,9 +80,9 @@ export default function CreatePinScreen() {
   return (
     <View style={styles.root}>
       <Button title="Upload your pin" onPress={pickImage} />
-      {image && (
+      {imageUri && (
         <>
-          <Image source={{ uri: image }} style={styles.image} />
+          <Image source={{ uri: imageUri }} style={styles.image} />
           <TextInput
             placeholder="Title..."
             value={title}
