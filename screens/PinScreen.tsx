@@ -14,6 +14,8 @@ const PinScreen = () => {
   const [ratio, setRatio] = useState(1);
   const [pin, setPin] = useState<any>(null);
 
+  const [imageUri, setImageUri] = useState('');
+
   const nhost = useNhostClient();
 
   const GET_PIN_QUERY = `
@@ -43,10 +45,20 @@ const PinScreen = () => {
   const fetchPin = async (pinId) => {
     const response = await nhost.graphql.request(GET_PIN_QUERY, { id: pinId });
     if (response.error) {
-      Alert.alert('Error fetching pin');
+      Alert.alert('Error fetching pin', response.error.message);
     } else {
       setPin(response.data.pins_by_pk);
     }
+  };
+
+  const fetchImage = async () => {
+    const result = await nhost.storage.getPresignedUrl({
+      fileId: pin.image,
+    });
+    if (result.presignedUrl?.url) {
+      setImageUri(result.presignedUrl?.url);
+    }
+    console.log(result);
   };
 
   useEffect(() => {
@@ -54,10 +66,14 @@ const PinScreen = () => {
   }, [pinId]);
 
   useEffect(() => {
-    if (pin?.image) {
-      Image.getSize(pin?.image, (width, height) => setRatio(width / height));
+    fetchImage();
+  }, [pin]);
+
+  useEffect(() => {
+    if (imageUri) {
+      Image.getSize(imageUri, (width, height) => setRatio(width / height));
     }
-  }, [pin?.image]);
+  }, [imageUri]);
 
   const goBack = () => {
     navigation.goBack();
@@ -70,7 +86,7 @@ const PinScreen = () => {
       <StatusBar style="light" />
       <View style={styles.root}>
         <Image
-          source={{ uri: pin.image }}
+          source={{ uri: imageUri }}
           style={[styles.image, { aspectRatio: ratio }]}
         />
         <Text style={styles.title}>{pin.title}</Text>
