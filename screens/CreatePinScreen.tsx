@@ -49,25 +49,43 @@ export default function CreatePinScreen() {
   };
 
   const uploadFile = async () => {
-    if(imageUri) 
+    if (!imageUri) {
+      return {
+        error: {
+          message: 'No image selected',
+        },
+      };
+    }
+
+    const parts = imageUri.split('/');
+    const name = parts[parts.length - 1];
+    const nameParts = name.split('.');
+    const extension = nameParts[nameParts.length - 1];
+
     const uri =
       Platform.OS === 'ios' ? imageUri.replace('file://', '') : imageUri;
     const result = await nhost.storage.upload({
-      name: '123.png',
-      type: 'image/png',
-      uri,
+      file: {
+        name,
+        type: `image/${extension}`,
+        uri,
+      },
     });
+    return result;
   };
 
   const onSubmit = async () => {
     // TODO upload image to storage
 
-    uploadFile();
+    const uploadResult = await uploadFile();
+
+    if (uploadResult?.error) {
+      Alert.alert('Error uploading image', uploadResult.error.message);
+    }
 
     const result = await nhost.graphql.request(CREATE_PIN_MUTATION, {
       title,
-      image:
-        'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/pinterest/1.jpeg',
+      image: uploadResult.fileMetadata.id,
     });
     console.log(result);
     if (result.error) {
