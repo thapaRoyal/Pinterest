@@ -1,20 +1,60 @@
+import { Entypo, Feather } from "@expo/vector-icons";
+import { useNhostClient, useSignOut, useUserId } from "@nhost/react";
+import React, { useEffect, useState } from "react";
 import {
-  Image,
-  Pressable,
-  ScrollView,
   StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import MasonryList from '../components/MasonryList';
-import pins from '../assets/data/pins';
-import { Entypo, Feather } from '@expo/vector-icons';
-import { useNhostClient, useSignOut } from '@nhost/react';
+  Image,
+  ScrollView,
+  Pressable,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
+import pins from "../assets/data/pins";
+import MasonryList from "../components/MasonryList";
+
+import { Text, View } from "../components/Themed";
+
+const GET_USER_QUERY = `
+query MyQuery($id: uuid!) {
+  user(id: $id) {
+    id
+    avatarUrl
+    displayName
+    pins {
+      id
+      image
+      title
+      created_at
+    }
+  }
+}
+`;
 
 export default function ProfileScreen() {
-  const nhost = useNhostClient();
+  const [user, setUser] = useState();
 
   const { signOut } = useSignOut();
+  const nhost = useNhostClient();
+
+  const userId = useUserId();
+
+  const fetchUserData = async () => {
+    const result = await nhost.graphql.request(GET_USER_QUERY, { id: userId });
+    console.log(result);
+    if (result.error) {
+      Alert.alert("Error fetching the user");
+    } else {
+      setUser(result.data.user);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  if (!user) {
+    return <ActivityIndicator />;
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -30,44 +70,48 @@ export default function ProfileScreen() {
             style={styles.icon}
           />
         </View>
+
         <Image
-          source={require('../assets/images/avatar.jpg')}
+          source={{
+            uri: user.avatarUrl,
+          }}
           style={styles.image}
         />
-        <Text style={styles.title}>thapaRoyal</Text>
-        <Text style={styles.subtitle}>777k followers | 23 Followings</Text>
+        <Text style={styles.title}>{user.displayName}</Text>
+        <Text style={styles.subtitle}>123 Followers | 534 Followings</Text>
       </View>
-      <MasonryList pins={pins} />
+
+      <MasonryList pins={user.pins} onRefresh={fetchUserData} />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
+    width: "100%",
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     margin: 10,
   },
   subtitle: {
-    color: '#181818',
-    fontWeight: '600',
+    color: "#181818",
+    fontWeight: "600",
     margin: 10,
   },
   image: {
-    height: 200,
+    width: 200,
     aspectRatio: 1,
     borderRadius: 200,
     marginVertical: 10,
   },
   header: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   icons: {
-    flexDirection: 'row',
-    alignSelf: 'flex-end',
+    flexDirection: "row",
+    alignSelf: "flex-end",
     padding: 10,
   },
   icon: {

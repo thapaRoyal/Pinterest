@@ -1,12 +1,13 @@
 import {
-  View,
   StyleSheet,
   ScrollView,
   useWindowDimensions,
   RefreshControl,
 } from 'react-native';
 
+import { View } from '../components/Themed';
 import Pin from '../components/Pin';
+import { useState } from 'react';
 
 interface IMasonryList {
   pins: {
@@ -25,7 +26,7 @@ const MasonryList = ({
 }: IMasonryList) => {
   const width = useWindowDimensions().width;
 
-  const numColumns = Math.ceil(width / 300);
+  const numColumns = Math.ceil(width / 350);
 
   return (
     <ScrollView

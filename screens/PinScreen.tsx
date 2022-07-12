@@ -1,6 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { Image, Text, View, StyleSheet, Pressable, Alert } from 'react-native';
+import {
+  Image,
+  Text,
+  View,
+  StyleSheet,
+  Pressable,
+  Alert,
+  ScrollView,
+} from 'react-native';
 import {
   SafeAreaView,
   useSafeAreaInsets,
@@ -60,19 +68,21 @@ const PinScreen = () => {
   if (!pin) return <Text>Pin not found</Text>;
 
   return (
-    <SafeAreaView style={{ backgroundColor: 'black' }}>
-      <StatusBar style="light" />
-      <View style={styles.root}>
-        <RemoteImage fileId={pin.image} />
-        <Text style={styles.title}>{pin.title}</Text>
-      </View>
-      <Pressable
-        onPress={goBack}
-        style={[styles.backBtn, { top: insets.top + 20 }]}
-      >
-        <Ionicons name={'chevron-back'} size={35} color={'white'} />
-      </Pressable>
-    </SafeAreaView>
+    <ScrollView>
+      <SafeAreaView style={{ backgroundColor: 'black' }}>
+        <StatusBar style="light" />
+        <View style={styles.root}>
+          <RemoteImage fileId={pin.image} />
+          <Text style={styles.title}>{pin.title}</Text>
+        </View>
+        <Pressable
+          onPress={goBack}
+          style={[styles.backBtn, { top: insets.top + 20 }]}
+        >
+          <Ionicons name={'chevron-back'} size={35} color={'white'} />
+        </Pressable>
+      </SafeAreaView>
+    </ScrollView>
   );
 };
 
